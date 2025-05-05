@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review & Reward Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e0f2f7, #b3e5fc); /* Lighter, more vibrant gradient */
+      margin: 0;
+      padding: 3rem 1rem; /* Increased padding */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh; /* Ensure full viewport height */
+    }
+    h1 {
+      color: #0277bd; /* A more vibrant blue */
+      font-size: 3rem; /* Larger heading */
+      margin-bottom: 1rem; /* Increased margin */
+      text-align: center;
+    }
+    p {
+      font-size: 1.2rem; /* Slightly larger text */
+      color: #455a64; /* Softer dark color */
+      max-width: 700px; /* Wider text block */
+      text-align: center;
+      margin-bottom: 3rem; /* Increased margin */
+      line-height: 1.6; /* Improved readability */
+    }
+    .container {
+        background-color: #ffffff; /* White background for content */
+        padding: 2rem;
+        border-radius: 16px; /* More rounded corners */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+        max-width: 500px; /* Max width for the content container */
+        width: 100%;
+        text-align: center;
+    }
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem; /* Increased space between buttons */
+      width: 100%;
+      margin-bottom: 2rem; /* Space before WhatsApp button */
+    }
+    .btn {
+      padding: 1.2rem; /* Increased padding for larger buttons */
+      font-size: 1.1rem; /* Slightly larger font in buttons */
+      font-weight: 700; /* Bolder text */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease; /* Added transform for subtle press effect */
+      width: 100%; /* Ensure buttons take full width of container */
+      text-align: center; /* Center text in buttons */
+      text-decoration: none; /* Remove underline from anchor tags */
+      display: inline-block; /* Allows padding and margin */
+    }
+    .btn:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px); /* Subtle lift effect on hover */
+    }
+     .btn:active {
+        transform: translateY(0); /* Press effect */
+    }
+    .btn-google {
+        background-color: #d34836; /* Google's color */
+    }
+    .btn-google:hover {
+        background-color: #c23b2b;
+    }
+     .btn-facebook {
+        background-color: #3b5998; /* Facebook's color */
+    }
+    .btn-facebook:hover {
+        background-color: #2d4373;
+    }
+    .btn-trustpilot {
+        background-color: #00b67a; /* Trustpilot's color */
+    }
+    .btn-trustpilot:hover {
+        background-color: #00a26c;
+    }
+    .btn-whatsapp {
+      background-color: #25D366; /* WhatsApp color */
+      margin-top: 1rem; /* Space above WhatsApp button */
+    }
+    .btn-whatsapp:hover {
+      background-color: #1da851;
+    }
+    .qr-container {
+      background: #ffffff;
+      padding: 1.5rem; /* Increased padding */
+      margin-top: 1.5rem; /* Increased margin */
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Improved shadow */
+      display: flex; /* Use flexbox for centering QR */
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      flex-direction: column; /* Stack QR and download link */
+      gap: 1rem; /* Space between QR and download link */
+    }
+    .hidden {
+      display: none;
+    }
+    .download-link {
+      display: block;
+      margin-top: 1rem; /* Space above the link */
+      color: #007bff;
+      text-decoration: none;
+      font-size: 1rem; /* Slightly larger font */
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    .download-link:hover {
+      text-decoration: underline;
+      color: #0056b3;
+    }
+     canvas { /* Style for the QR code canvas */
+        max-width: 100%; /* Prevent QR code from overflowing */
+        height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Leave a Review & Get Rewarded!</h1>
+  <p>Choose your favorite platform below to leave us a review. Once done, simply send us a screenshot of your review on WhatsApp, and we'll send you a special gift card or shopping coupon as a thank you!</p>
+
+  <div class="container">
+      <div class="button-group">
+        <a href="javascript:void(0)" class="btn btn-google" onclick="showQR('google')">⭐ Review on Google</a>
+        <div id="qr-google" class="qr-container hidden"></div>
+
+        <a href="javascript:void(0)" class="btn btn-facebook" onclick="showQR('facebook')">📘 Review on Facebook</a>
+        <div id="qr-facebook" class="qr-container hidden"></div>
+
+        <a href="javascript:void(0)" class="btn btn-trustpilot" onclick="showQR('trustpilot')">💬 Review on Trustpilot</a>
+        <div id="qr-trustpilot" class="qr-container hidden"></div>
+      </div>
+
+      <a class="btn btn-whatsapp" href="https://wa.me/923355245551?text=Hi%2C%20I%20left%20a%20review%20and%20here%27s%20my%20screenshot." target="_blank">📷 Send Screenshot on WhatsApp</a>
+  </div>
+
+
+  <script>
+    const links = {
+      google: "https://www.google.com/search?q=IQRA+VIRTUAL+SCHOOL+Reviews&oq=IQRA+VIRTUAL+SCHOOL+Reviews&aqs=chrome..69i57.6532j0j7&sourceid=chrome&ie=UTF-8#lrd=0x0:0x8b43eb3268d42361,1,,,,",
+      facebook: "https://www.facebook.com/iqravirtualschool/reviews",
+      trustpilot: "https://www.trustpilot.com/review/iqravirtualschool.com"
+    };
+
+    function showQR(platform) {
+      const container = document.getElementById(`qr-${platform}`);
+
+      // Hide all other QR containers
+      ['google', 'facebook', 'trustpilot'].forEach(p => {
+        if (p !== platform) {
+          document.getElementById(`qr-${p}`).classList.add('hidden');
+          // Optional: Clear previous QR codes to save memory/improve performance
+          // document.getElementById(`qr-${p}`).innerHTML = '';
+        }
+      });
+
+      // If this container is already visible, hide it (toggle behavior)
+      if (!container.classList.contains('hidden')) {
+           container.classList.add('hidden');
+           return; // Exit the function
+      }
+
+
+      // Generate QR code only if it doesn't exist
+      if (!container.hasChildNodes() || container.querySelector('canvas') === null) {
+        container.innerHTML = ''; // Clear previous content if any
+
+        const canvas = document.createElement('canvas');
+        QRCode.toCanvas(canvas, links[platform], function (error) {
+          if (error) console.error(error);
+        });
+        container.appendChild(canvas);
+
+        const downloadLink = document.createElement('a');
+        downloadLink.innerText = "⬇️ Download QR Code";
+        downloadLink.className = 'download-link';
+        // Give a short delay before setting href to ensure canvas is ready
+        setTimeout(() => {
+            downloadLink.href = canvas.toDataURL();
+        }, 50);
+
+        downloadLink.download = `${platform}-review-qr.png`;
+        container.appendChild(downloadLink);
+      }
+
+      // Show the selected QR container
+      container.classList.remove('hidden');
+    }
+
+    // Optional: Hide QR code if user clicks outside the container
+    document.addEventListener('click', function(event) {
+        const isButtonClick = event.target.classList.contains('btn');
+        const isInsideQRContainer = event.target.closest('.qr-container');
+
+        if (!isButtonClick && !isInsideQRContainer) {
+            document.querySelectorAll('.qr-container').forEach(container => {
+                container.classList.add('hidden');
+            });
+        }
+    });
+
+  </script>
+</body>
+</html>
